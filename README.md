@@ -159,3 +159,7 @@ Tests never read your `.env`, never touch the network and never look for a real 
 Built on [CesiumJS](https://cesium.com/platform/cesiumjs/) (Apache-2.0), [Next.js](https://nextjs.org), [shadcn/ui](https://ui.shadcn.com), [FastAPI](https://fastapi.tiangolo.com), [SQLAlchemy](https://www.sqlalchemy.org) and [JetBrains Mono](https://www.jetbrains.com/lp/mono/) (OFL).
 Map data: [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (tiles; please respect the [tile usage policy](https://operations.osmfoundation.org/policies/tiles/)), [Natural Earth](https://www.naturalearthdata.com) (country and state borders, public domain, via [`world-atlas`](https://github.com/topojson/world-atlas)), airport codes from [OurAirports](https://ourairports.com) (public domain), weather radar by [RainViewer](https://www.rainviewer.com).
 Optional online lookups: [adsbdb](https://www.adsbdb.com) and [planespotters.net](https://www.planespotters.net) (photos are credited to their photographers in the app).
+
+## License
+
+[Apache License 2.0](LICENSE). You may use, modify and redistribute it, but you must keep the copyright and [`NOTICE`](NOTICE) file and mark files you changed. Third-party components keep their own licences.
