@@ -9,6 +9,21 @@ RTL-SDR ─▶ dump1090 / readsb ─▶ SBS-1 (port 30003) ─▶ backend (FastA
                        └────── aircraft.json (signal strength) ───────┘
 ```
 
+![Projector mode: black map, outlines, glowing flight lines and sticky tags](docs/screenshots/projector.png)
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/live.png" alt="Live tab with aircraft list and trails"><br><sub><b>Live</b>: aircraft list, altitude filter, trails</sub></td>
+    <td width="50%"><img src="docs/screenshots/flight-card.png" alt="Flight card with route, readouts and artificial horizon"><br><sub><b>Flight card</b>: route, readouts, estimated attitude, camera views</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/history-replay.png" alt="History tab replaying a logged flight"><br><sub><b>History</b>: pick flights, replay on a timeline</sub></td>
+    <td width="50%"><img src="docs/screenshots/stats.png" alt="Stats tab with charts"><br><sub><b>Stats</b>: flights per day and hour, cruise altitudes, top airlines</sub></td>
+  </tr>
+</table>
+
+<sub>Screenshots use simulated traffic from `scripts/synth_sbs.py`.</sub>
+
 ## Highlights
 
 - **Live 3D map**: aircraft at true altitude with airline-coloured models (about 25 liveries, six body shapes chosen from the aircraft type), altitude-coloured trails, drop lines and estimated pitch and roll.
@@ -72,6 +87,8 @@ docker compose up --build               # http://localhost:3000
 python scripts/synth_sbs.py 30003 52.3 4.76     # six aircraft flying circles (port, lat, lon)
 python scripts/seed_demo.py                      # optional: departures on previous days, for History
 ```
+
+Use a free port: if a real decoder is running it already holds `30003` and the script fails with a permission error. Pick another port (for example `30098`) and start the backend with `SBS_PORT=30098` (and `DB_URL` pointing at a separate file so demo data stays out of your real log).
 
 ## Configuration
 
