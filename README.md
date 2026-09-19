@@ -1,4 +1,4 @@
-# flightlog-sdr
+# FlightLog-SDR
 
 **A 3D ADS-B flight logger for RTL-SDR.** It records every aircraft your receiver hears, shows live traffic on a 3D globe at true altitude, replays past flights on top of each other, tells you when something interesting shows up, and has a projector mode for putting the sky on a wall.
 
