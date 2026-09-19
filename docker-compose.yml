@@ -1,0 +1,38 @@
+# flightlog-sdr: backend + web app in containers.
+# The decoder (dump1090 / readsb) and the RTL-SDR stay on the host; the backend reaches them
+# through host.docker.internal. The decoder must listen on all interfaces, not just 127.0.0.1.
+#
+#   docker compose up --build        then open http://localhost:3000
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: ./backend/.env        # optional; same file you use without Docker
+        required: false
+    environment:
+      SBS_HOST: ${SBS_HOST:-host.docker.internal}
+      SBS_PORT: ${SBS_PORT:-30003}
+      AIRCRAFT_JSON_URL: ${AIRCRAFT_JSON_URL:-http://host.docker.internal:8080/data/aircraft.json}
+      RECEIVER_CONTROL: "0"          # gain editing needs the host's dump1090.cfg, so it is off here
+      FLIGHTLOG_NO_DOTENV: "1"       # settings come from env_file above, not a file inside the image
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # needed on Linux; harmless on Docker Desktop
+    volumes:
+      - flightlog-data:/data
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  flightlog-data:

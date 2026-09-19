@@ -1,0 +1,49 @@
+# --- secrets and local settings -------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# --- Python -------------------------------------------------------------------------------------------
+.venv/
+.venv-win/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# --- your data: never commit the flight log, backups or logs -------------------------------------------
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+backend/backups/
+*.bak-*
+*.log
+
+# --- Node / Next.js ---------------------------------------------------------------------------------
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+# copied from the cesium package by frontend/scripts/copy-cesium.mjs
+frontend/public/cesium/
+
+# --- editors and OS -----------------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# --- local tooling --------------------------------------------------------------------------------------
+.claude/
+graphify-out/
+
+# --- an older, separate front-end experiment (deck.gl / MapLibre) that is not part of this app ---------
+web/

@@ -1,0 +1,10 @@
+aiosqlite==0.22.1
+fastapi==0.141.1
+httpx==0.28.1
+SQLAlchemy==2.0.54
+python-dotenv==1.2.3
+uvicorn[standard]==0.53.0
+
+# tests
+pytest==9.1.1
+pytest-asyncio==1.4.0
