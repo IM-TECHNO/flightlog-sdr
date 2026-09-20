@@ -1,38 +1,58 @@
-# flightlog-sdr: backend + web app in containers.
-# The decoder (dump1090 / readsb) and the RTL-SDR stay on the host; the backend reaches them
-# through host.docker.internal. The decoder must listen on all interfaces, not just 127.0.0.1.
+# flightlog-sdr in Docker: backend + web app.
+#
+# The RTL-SDR and the decoder (dump1090 / readsb) stay on the host. The backend reaches them through
+# host.docker.internal, so the decoder must listen on all interfaces, not just 127.0.0.1.
 #
 #   docker compose up --build        then open http://localhost:3000
+#
+# Settings: backend/.env (optional, same file as without Docker) and, for ports and the API address,
+# a .env next to this file. See the comments on each variable below.
+name: flightlog-sdr
+
 services:
   backend:
     build: ./backend
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8000}:8000"        # BACKEND_PORT=8010 if 8000 is taken
     env_file:
-      - path: ./backend/.env        # optional; same file you use without Docker
+      - path: ./backend/.env                # optional; needs Compose 2.24+
         required: false
     environment:
       SBS_HOST: ${SBS_HOST:-host.docker.internal}
       SBS_PORT: ${SBS_PORT:-30003}
       AIRCRAFT_JSON_URL: ${AIRCRAFT_JSON_URL:-http://host.docker.internal:8080/data/aircraft.json}
-      RECEIVER_CONTROL: "0"          # gain editing needs the host's dump1090.cfg, so it is off here
-      FLIGHTLOG_NO_DOTENV: "1"       # settings come from env_file above, not a file inside the image
+      RECEIVER_CONTROL: "0"                 # gain editing needs the host's dump1090.cfg
+      FLIGHTLOG_NO_DOTENV: "1"              # settings come from env_file above, not from inside the image
     extra_hosts:
-      - "host.docker.internal:host-gateway"   # needed on Linux; harmless on Docker Desktop
+      - "host.docker.internal:host-gateway" # needed on Linux; harmless on Docker Desktop
     volumes:
-      - flightlog-data:/data
+      - flightlog-data:/data                # the SQLite flight log
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
 
   frontend:
     build:
       context: ./frontend
       args:
+        # Baked in at build time. Leave empty to use "same host as the page, port 8000";
+        # set it (e.g. http://localhost:8010) when BACKEND_PORT is not 8000 or for other devices.
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+        NEXT_BUILD_CPUS: ${NEXT_BUILD_CPUS:-2}   # lower = gentler on memory while building
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
 
 volumes:
   flightlog-data:

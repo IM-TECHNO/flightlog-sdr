@@ -47,3 +47,6 @@ graphify-out/
 
 # --- an older, separate front-end experiment (deck.gl / MapLibre) that is not part of this app ---------
 web/
+
+# chat context notes (not for the repo)
+claude-context.md

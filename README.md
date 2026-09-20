@@ -47,7 +47,23 @@ readsb --net            # readsb
 
 That serves SBS-1 on port `30003` and (for signal strength) `aircraft.json` on port `8080`.
 
-### 2. Backend
+### 2. Run it
+
+One command does the first-time setup (Python environment, packages, `backend/.env`, web build) and starts the API and the web app together. Ctrl+C stops both.
+
+```bash
+.\start.ps1            # Windows (PowerShell)
+./start.sh             # Linux / macOS
+```
+
+Open http://localhost:3000. Aircraft appear within seconds of the first one being received. Set `RECEIVER_LAT` / `RECEIVER_LON` in `backend/.env` and restart.
+
+Options: `-Lan` / `--lan` to reach it from other devices on your network, `-Dev` / `--dev` for the hot-reloading dev server, `-ApiPort` / `-WebPort` (Windows) or `API_PORT` / `WEB_PORT` (Linux/macOS) to change ports, and `-Rebuild` / `--rebuild` after changing the API port or pulling new code.
+
+<details>
+<summary>Manual setup instead</summary>
+
+**Backend**
 
 ```bash
 cd backend
@@ -57,7 +73,7 @@ cp .env.example .env                                  # then edit .env (at least
 .venv/bin/python -m uvicorn app.main:app --port 8000  # Windows: .venv\Scripts\python -m uvicorn ...
 ```
 
-### 3. Web app
+**Web app**
 
 ```bash
 cd frontend
@@ -67,9 +83,11 @@ npm run dev            # http://localhost:3000
 
 Open http://localhost:3000. Aircraft appear within seconds of the first one being received.
 
-### Or with Docker
+</details>
 
-The backend and web app run in containers; the decoder and the dongle stay on your machine.
+### Or with Docker (optional)
+
+The backend and web app can run in containers; the decoder and the dongle stay on your machine.
 
 ```bash
 cp backend/.env.example backend/.env    # optional: set RECEIVER_LAT / RECEIVER_LON etc.
@@ -78,6 +96,7 @@ docker compose up --build               # http://localhost:3000
 
 - The backend reaches the decoder at `host.docker.internal` (ports 30003 and 8080), so the decoder must listen on all interfaces. Override with `SBS_HOST`, `SBS_PORT` and `AIRCRAFT_JSON_URL` if it lives elsewhere.
 - The flight log is kept in the `flightlog-data` volume.
+- Ports are `3000` (web) and `8000` (API). If 8000 is taken, set `BACKEND_PORT=8010` and `NEXT_PUBLIC_API_URL=http://localhost:8010` (in your shell or a `.env` next to `docker-compose.yml`) before building.
 - Gain control (Rx tab) is off in Docker because it edits the host's `dump1090.cfg`; run the backend natively for that.
 - To open it from another device, build with `NEXT_PUBLIC_API_URL=http://<this-pc-ip>:8000 docker compose up --build`.
 
